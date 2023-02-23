@@ -1,0 +1,32 @@
+# ---- LOGGER -----
+logging:
+  level:
+    org:
+      springframework:
+        cloud:
+          gateway:
+            route:
+              RouteDefinitionLocator: INFO
+            nodeValue: DEBUG
+    nodeValue: INFO
+    root: INFO
+    reactor:
+      netty:
+        http:
+          client: DEBUG
+
+# ----- SPRING-CLOUD-GATEWAY -----
+spring:
+  application:
+    name: api-gateway
+  gateway:
+    routes:
+  output:
+    ansi:
+      enabled: ALWAYS
+
+# ----- EUREKA-CLIENT -----
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8778/eureka
