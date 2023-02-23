@@ -17,8 +17,10 @@
 	<packaging>pom</packaging>
 
 	<modules>
-
 		<module>discovery-microservice</module>
+		<module>api-gateway</module>
+		<module>authentication-microservice</module>
+		<module>user-service</module>
 	</modules>
 
 	<properties>
