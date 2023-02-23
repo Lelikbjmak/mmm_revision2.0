@@ -22,10 +22,16 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: "authentication-microservice-route"
-          uri: "lb://authentication-service"
+        - id: authentication-microservice-route
+          uri: lb://authentication-microservice
           predicates:
-            - "Path=/api/auth/{segment}"
+            - Path=/api/auth/{segment}
+        - id: user-microservice-route
+          uri: lb://user-microservice
+          predicates:
+            - Path=/api/user/{segment}
+          filters:
+            - AuthenticationPrefilter
   output:
     ansi:
       enabled: ALWAYS
