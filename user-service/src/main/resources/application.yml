@@ -1,0 +1,26 @@
+# ----- PROPERTIES -----
+spring:
+  output:
+    ansi:
+      enabled: ALWAYS
+  jpa:
+    hibernate:
+      ddl-auto: update
+      format_sql: true
+    show-sql: true
+  datasource:
+    url: jdbc:mysql://localhost:3306/users_microservice
+    username: root
+    password: qwertY_1351530
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  application:
+    name: user-microservice
+
+server:
+  port: 0
+
+# ----- EUREKA CLIENT -----
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8778/eureka
