@@ -19,8 +19,13 @@ logging:
 spring:
   application:
     name: api-gateway
-  gateway:
-    routes:
+  cloud:
+    gateway:
+      routes:
+        - id: "authentication-microservice-route"
+          uri: "lb://authentication-service"
+          predicates:
+            - "Path=/api/auth/{segment}"
   output:
     ansi:
       enabled: ALWAYS
