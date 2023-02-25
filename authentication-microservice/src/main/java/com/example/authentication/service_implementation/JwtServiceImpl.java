@@ -1,8 +1,8 @@
 package com.example.authentication.service_implementation;
 
+import com.example.authentication.exceptions.InvalidTokenException;
 import com.example.authentication.service.JwtService;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -31,13 +31,13 @@ public class JwtServiceImpl extends JwtService {
     }
 
     @Override
-    public boolean isJwtTokenValid(String jwtToken, UserDetails userDetails) {
+    public boolean isJwtTokenValid(String jwtToken, UserDetails userDetails) throws MalformedJwtException, ExpiredJwtException, UnsupportedJwtException, IllegalArgumentException, InvalidTokenException {
         final String username = extractUsername(jwtToken);
         return username.equals(userDetails.getUsername()) && !isTokenExpired(jwtToken);
     }
 
     @Override
-    public boolean isTokenExpired(String jwtToken) {
+    public boolean isTokenExpired(String jwtToken) throws InvalidTokenException {
         return extractExpiration(jwtToken).before(new Date());
     }
 
