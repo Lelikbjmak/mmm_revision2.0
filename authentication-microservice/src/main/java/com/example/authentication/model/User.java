@@ -6,6 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -18,6 +19,9 @@ import java.util.Set;
 @Setter
 @Table(name = "users")
 public class User implements UserDetails {
+
+    @Transient
+    public static final int MAX_FAILED_ATTEMPTS = 3;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,6 +44,14 @@ public class User implements UserDetails {
     private boolean accountNonLocked;
     private boolean credentialsNonExpired;
     private boolean enabled;
+
+    @Getter
+    @Setter
+    private int failedAttempts = 0;
+
+    @Getter
+    @Setter
+    private LocalDateTime accountLockTime;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
