@@ -8,4 +8,9 @@ public interface UserService {
 
     User findBymMail(String mail);
 
+    User resetFailedAttempts(User user);
+
+    User unlockUserAfterThreeFailedAttempts(User user);
+
+    User increaseFailedAttempts(User user);
 }
