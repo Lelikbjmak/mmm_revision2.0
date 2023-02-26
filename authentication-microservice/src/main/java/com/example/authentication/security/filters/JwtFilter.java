@@ -1,5 +1,6 @@
 package com.example.authentication.security.filters;
 
+import com.example.authentication.dto.AuthenticationResponse;
 import com.example.authentication.exceptions.InvalidTokenException;
 import com.example.authentication.service.JwtService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,6 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,6 +22,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Date;
 
 @Component
 @RequiredArgsConstructor
@@ -41,9 +44,10 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
 
+        String jwtToken = authenticationHeader.substring(7);
+
         try {
 
-            String jwtToken = authenticationHeader.substring(7);
             String username = jwtService.extractUsername(jwtToken);
 
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
@@ -70,12 +74,24 @@ public class JwtFilter extends OncePerRequestFilter {
 
 
         } catch (InvalidTokenException e) {
-            e.setPath(request.getRequestURI());
+
+            HttpStatus status = HttpStatus.UNAUTHORIZED;
+            e.setPath(request.getServletPath());
+
             log.info("Error jwtToken for IP: " + getClientIpAddress(request));
+
+            AuthenticationResponse authenticationResponse = AuthenticationResponse.builder()
+                    .timestamp(new Date())
+                    .code(status.value())
+                    .status(status.name())
+                    .token(jwtToken)
+                    .message(e.getMessage())
+                    .build();
+
             response.setContentType("application/json");
             response.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getOutputStream().print(objectMapper.writeValueAsString(e.getMessage()));
+            response.setStatus(status.value());
+            response.getOutputStream().print(objectMapper.writeValueAsString(authenticationResponse));
             return;
         }
 
@@ -83,23 +99,30 @@ public class JwtFilter extends OncePerRequestFilter {
 
     }
 
-    public String getClientIpAddress(HttpServletRequest request) {
+    private String getClientIpAddress(HttpServletRequest request) {
+
         String ip = request.getHeader("X-Forwarded-For");
+
         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
             ip = request.getHeader("Proxy-Client-IP");
         }
+
         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
             ip = request.getHeader("WL-Proxy-Client-IP");
         }
+
         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
             ip = request.getHeader("HTTP_CLIENT_IP");
         }
+
         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
             ip = request.getHeader("HTTP_X_FORWARDED_FOR");
         }
+
         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
             ip = request.getRemoteAddr();
         }
+
         return ip;
     }
 }
