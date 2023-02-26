@@ -47,8 +47,8 @@ public class AuthenticationController {
                 .username(username)
                 .methodType(HttpMethod.GET)
                 .authorities(userService.findByUsername(username).getAuthorities().toString())
-                .code(HttpStatus.OK.value())
-                .status(HttpStatus.OK.name())
+                .code(HttpStatus.ACCEPTED.value())
+                .status(HttpStatus.ACCEPTED.name())
                 .timestamp(new Date())
                 .build();
     }

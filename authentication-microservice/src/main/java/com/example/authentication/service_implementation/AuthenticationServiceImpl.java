@@ -76,7 +76,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             }
         }
 
-        HttpStatus status = HttpStatus.OK;
+        HttpStatus status = HttpStatus.ACCEPTED;
 
         User user = userService.findByUsername(request.getUsername());
         String token = jwtService.generateToken(user);
