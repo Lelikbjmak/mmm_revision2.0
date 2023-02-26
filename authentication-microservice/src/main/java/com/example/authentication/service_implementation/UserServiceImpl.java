@@ -43,8 +43,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public User increaseFailedAttempts(User user) {
         user.setFailedAttempts(user.getFailedAttempts() + 1);
-        if (user.getFailedAttempts() == User.MAX_FAILED_ATTEMPTS)
+        if (user.getFailedAttempts() == User.MAX_FAILED_ATTEMPTS) {
             user.setAccountNonLocked(false);
+            user.setAccountLockTime(LocalDateTime.now());
+        }
         return userRepository.save(user);
     }
 

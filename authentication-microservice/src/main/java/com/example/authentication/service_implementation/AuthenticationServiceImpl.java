@@ -5,6 +5,7 @@ import com.example.authentication.dto.AuthenticationRequest;
 import com.example.authentication.dto.AuthenticationResponse;
 import com.example.authentication.exceptions.JwtAuthenticationException;
 import com.example.authentication.model.User;
+import com.example.authentication.repository.UserRepository;
 import com.example.authentication.service.AuthenticationService;
 import com.example.authentication.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     private final JwtServiceImpl jwtService;
 
+    private final UserRepository userRepository;
+
     private final Argon2PasswordEncoder passwordEncoder;
 
     private final UserService userService;
@@ -41,7 +44,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             );
         } catch (AuthenticationException e) {
 
-            if (userService.findByUsername(request.getUsername()) == null) {
+            if (userRepository.findByUsername(request.getUsername()).isEmpty()) {
                 AuthenticationErrorStatus status = AuthenticationErrorStatus.USERNAME;
                 throw new JwtAuthenticationException(status.getStatusMessage(), request.getUsername(), request.getPassword(), status);
             } else {

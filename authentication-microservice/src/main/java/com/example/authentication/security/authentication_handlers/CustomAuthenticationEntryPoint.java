@@ -39,19 +39,26 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
 
         if (authException instanceof JwtAuthenticationException exception) {
 
-            User user = userService.findByUsername(exception.getUsername());
+            if (exception.getStatus().equals(AuthenticationErrorStatus.USERNAME)) {
 
-            if (exception.getStatus().equals(AuthenticationErrorStatus.PASSWORD)) {
+                additional.put("username", exception.getUsername());
                 additional.put("password", exception.getPassword());
-                additional.put("status", "incorrect");
-                additional.put("attempts to sign in left", User.MAX_FAILED_ATTEMPTS - user.getFailedAttempts());
-            }
 
-            if (exception.getStatus().equals(AuthenticationErrorStatus.LOCKED)) {
-                additional.put("locked time", user.getAccountLockTime());
-                additional.put("unlocked time", user.getAccountLockTime().plusDays(1));
-            }
+            } else {
 
+                User user = userService.findByUsername(exception.getUsername());
+
+                if (exception.getStatus().equals(AuthenticationErrorStatus.PASSWORD)) {
+                    additional.put("password", exception.getPassword());
+                    additional.put("status", "incorrect");
+                    additional.put("attempts to sign in left", User.MAX_FAILED_ATTEMPTS - user.getFailedAttempts());
+                }
+
+                if (exception.getStatus().equals(AuthenticationErrorStatus.LOCKED)) {
+                    additional.put("locked time", user.getAccountLockTime());
+                    additional.put("unlocked time", user.getAccountLockTime().plusDays(1));
+                }
+            }
         }
 
         HttpStatus status = HttpStatus.UNAUTHORIZED;
