@@ -1,4 +1,4 @@
-# ---- PROPERTIES -----
+# ----- PROPERTIES -----
 spring:
   output:
     ansi:
@@ -14,7 +14,8 @@ spring:
     password: qwertY_1351530
     driver-class-name: com.mysql.cj.jdbc.Driver
   application:
-    name: authentication-service
+    name: authentication-microservice
+
 server:
   port: 0
   
