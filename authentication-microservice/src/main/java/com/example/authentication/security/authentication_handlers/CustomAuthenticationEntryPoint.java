@@ -49,14 +49,17 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
                 User user = userService.findByUsername(exception.getUsername());
 
                 if (exception.getStatus().equals(AuthenticationErrorStatus.PASSWORD)) {
-                    additional.put("password", exception.getPassword());
-                    additional.put("status", "incorrect");
                     additional.put("attempts to sign in left", User.MAX_FAILED_ATTEMPTS - user.getFailedAttempts());
                 }
 
                 if (exception.getStatus().equals(AuthenticationErrorStatus.LOCKED)) {
                     additional.put("locked time", user.getAccountLockTime());
                     additional.put("unlocked time", user.getAccountLockTime().plusDays(1));
+                }
+
+                if (exception.getStatus().equals(AuthenticationErrorStatus.EXPIRED)) {
+                    additional.put("credentials expired", user.isCredentialsNonExpired());
+                    additional.put("account expired", user.isAccountNonExpired());
                 }
             }
         }
