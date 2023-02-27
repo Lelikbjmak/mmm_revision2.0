@@ -1,0 +1,52 @@
+# ----- PROPERTIES -----
+spring:
+  output:
+    ansi:
+      enabled: ALWAYS
+  jpa:
+    hibernate:
+      ddl-auto: update
+      format_sql: true
+    show-sql: true
+  datasource:
+    url: jdbc:mysql://localhost:3306/users_microservice_test
+    username: root
+    password: qwertY_1351530
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  application:
+    name: authentication-microservice-test
+
+server:
+  port: 0
+
+# ----- EUREKA-CLIENT -----
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8778/eureka
+
+# ----- TEST-PROPERTIES -----
+user:
+  - username: testUser # correctUser
+    password: 1111
+    incorrect_password: wrongPassword
+  - username: lockedUser # user is locked
+    password: 1111
+  - username: disabledUser # disabled user
+    password: 1111
+  - username: expiredUser # expired user
+    password: 1111
+  - username: notExistsUser # user doesn't exist
+    password: 1111
+
+response:
+  error:
+    message:
+      user_not_exists: Username doesn't exist.
+      user_expired: Account or Credentials are expired.
+      user_disabled: Account isn't enabled.
+      user_locked: Account is locked.
+      incorrect_password: Incorrect password.
+
+token:
+  secret: 2B4D6251655468576D5A7134743777217A25432A462D4A404E635266556A586E
