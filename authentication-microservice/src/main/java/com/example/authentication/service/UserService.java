@@ -6,7 +6,7 @@ public interface UserService {
 
     User findByUsername(String username);
 
-    User findBymMail(String mail);
+    User findByMail(String mail);
 
     User resetFailedAttempts(User user);
 

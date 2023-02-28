@@ -42,7 +42,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ContextConfiguration(classes = {AuthenticationMicroserviceApplication.class})
 @AutoConfigureMockMvc
-@ActiveProfiles({"test"})
+@ActiveProfiles({"test-controllers"})
 public class AuthenticationControllerTest {
 
     private final MockMvc mockMvc;
