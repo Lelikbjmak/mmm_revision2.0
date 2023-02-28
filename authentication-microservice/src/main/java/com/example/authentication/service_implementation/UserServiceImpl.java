@@ -4,6 +4,7 @@ import com.example.authentication.model.User;
 import com.example.authentication.repository.UserRepository;
 import com.example.authentication.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,12 +20,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findByUsername(String username) {
-        return userRepository.findByUsername(username).orElseThrow(RuntimeException::new);
+        return userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User '" +
+                username + "' is not found."));
     }
 
     @Override
-    public User findBymMail(String mail) {
-        return userRepository.findByUsername(mail).orElseThrow(RuntimeException::new);
+    public User findByMail(String mail) {
+        return userRepository.findByMail(mail).orElseThrow(() -> new UsernameNotFoundException("User with mail " +
+                mail + " is not found."));
     }
 
     @Override
@@ -35,8 +38,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User unlockUserAfterThreeFailedAttempts(User user) {
-        if (user.getAccountLockTime().isAfter(LocalDateTime.now()))
+
+        if (user.getAccountLockTime().isAfter(LocalDateTime.now())) {
             user.setAccountNonLocked(false);
+            resetFailedAttempts(user);
+        }
         return userRepository.save(user);
     }
 
